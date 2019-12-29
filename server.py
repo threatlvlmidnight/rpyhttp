@@ -1,11 +1,11 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from sense_hat import SenseHat
+from sense_hat import SenseHat # hardware library
 from gpiozero import CPUTemperature
 import socketserver
 import os
 import time
-import subprocess
-import displayset
+import subprocess # to get ip address from device
+import displayset #local module
 
 
 # Gets the IP address of the PI
@@ -13,6 +13,9 @@ IP = subprocess.check_output(["hostname", "-I"]).split()[0]
 
 # Assigns the hostname from above and sets the port number
 host_name = str(IP.decode('utf-8'))
+
+
+# ENTER a host port, 8000, 8080 work. 
 host_port = 8000
 
 # Get CPU temp from GPIOzero library
@@ -26,7 +29,7 @@ sense.set_rotation(270)
 # F U N C T I O N S
 
 # Assings RGB values to text color inputs
-
+    # Moved to displayset module
 
 
 # Sets the SenseHat matrix to a solid color
