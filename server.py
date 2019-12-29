@@ -5,6 +5,7 @@ import socketserver
 import os
 import time
 import subprocess
+import displayset
 
 
 # Gets the IP address of the PI
@@ -25,33 +26,20 @@ sense.set_rotation(270)
 # F U N C T I O N S
 
 # Assings RGB values to text color inputs
-def returnRGB(color):
-    colorx = color.casefold()
-    if colorx == "red":
-        return (255, 0, 0)
-    elif colorx == "green":
-        return (0, 255, 0)
-    elif colorx == "blue":
-        return (0, 0, 255)
-    elif colorx == "blue":
-        return (255, 255, 255)
-    elif colorx == "lavender":
-        return (215, 215, 235)
-    else:
-        return (255, 255, 255)
+
 
 
 # Sets the SenseHat matrix to a solid color
 def showColor(color, power):
     if power == "On":
-        sense.clear(returnRGB(color))
+        sense.clear(displayset.returnRGB(color))
     elif power == "Off":
         sense.clear()
 
 # Shows a message on the SenseHat matrix
 def showMessage(message, color, power):
     if power == "On":
-        sense.show_message(message, 0.075, returnRGB(color))
+        sense.show_message(message, 0.075, displayset.returnRGB(color))
     elif power == "Off":
         sense.clear()
 
@@ -160,6 +148,7 @@ if __name__ == '__main__':
     
 
     
+
 
 
 
