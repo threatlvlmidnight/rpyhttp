@@ -1,0 +1,17 @@
+Hardware list:
+
+
+
+### Current Build ###
+	# Adafruit 32x32 RGB LED Matrix (4mm pitch)
+	# Adafruit RGB + RTC Hat
+	# Raspberry Pi 3 b
+	# 3D printed case
+
+
+
+### Test Build ###
+	Raspberry Pi 4 b (4gb)
+	senseHat
+	64 gb SDXC (fat32)
+	
