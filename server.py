@@ -23,8 +23,8 @@ cpu = CPUTemperature()
 cpuTemp = cpu.temperature
 
 # SenseHat setup, REMOVE in final build
-sense = SenseHat()
-sense.set_rotation(270)
+
+
 
 # F U N C T I O N S
 
@@ -32,19 +32,7 @@ sense.set_rotation(270)
     # Moved to displayset module
 
 
-# Sets the SenseHat matrix to a solid color
-def showColor(color, power):
-    if power == "On":
-        sense.clear(displayset.returnRGB(color))
-    elif power == "Off":
-        sense.clear()
 
-# Shows a message on the SenseHat matrix
-def showMessage(message, color, power):
-    if power == "On":
-        sense.show_message(message, 0.075, displayset.returnRGB(color))
-    elif power == "Off":
-        sense.clear()
 
 
 # Initializes a simple HTTP server using the custom BaseHTTPRequestHandler
@@ -92,6 +80,10 @@ class MyServer(BaseHTTPRequestHandler):
                     <br>
                     <input type="text" name="color"><br>
                     <br>
+                    <b>Rotation:</b>
+                    <br>
+                    <input type="text" name="rotation"><br>
+                    <br>
                     Turn the light on or off: <br>
                     <input type="submit" name="onButton" value="On" />
                     <input type="submit" name="offButton" value="Off" />
@@ -112,25 +104,30 @@ class MyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_length).decode("utf-8")
-        #print(post_body)
+        print(post_body)
         post_body = post_body.split("&")
         post_c = post_body[1]
-        post_p = post_body[2]
+        post_p = post_body[3]
         post_m = post_body[0]
+        post_r = post_body[2]
         post_c = post_c.split("=")
         post_p = post_p.split("=")
         post_m = post_m.split("=")
+        post_r = post_r.split("=")
         color = post_c[1]
         power = post_p[1]
         message = post_m[1]
+        rotation = post_r[1]
     
         message2 = message.split("+")
         message = ' '.join(message2)
-        showMessage(message, color, power)
+        displayset.setRotation(rotation)
+        displayset.showMessage(message, color, power)
         
         print(color)
         print(power)
         print(message)
+        print(rotation)
         
         self._redirect('/')
         

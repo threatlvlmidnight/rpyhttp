@@ -1,3 +1,8 @@
+from sense_hat import SenseHat # hardware library
+
+sense = SenseHat()
+sense.set_rotation(270)
+
 # Convert text color inputs to rgb value tuples
 
 def returnRGB(color):
@@ -14,3 +19,25 @@ def returnRGB(color):
         return (215, 215, 235)
     else:
         return (255, 255, 255)
+    
+    
+    
+def setRotation(deg):
+    sense.set_rotation(int(deg))
+    
+    
+    
+    
+# Sets the SenseHat matrix to a solid color
+def showColor(color, power):
+    if power == "On":
+        sense.clear(displayset.returnRGB(color))
+    elif power == "Off":
+        sense.clear()
+
+# Shows a message on the SenseHat matrix
+def showMessage(message, color, power):
+    if power == "On":
+        sense.show_message(message), 0.075, returnRGB(color)
+    elif power == "Off":
+        sense.clear()
