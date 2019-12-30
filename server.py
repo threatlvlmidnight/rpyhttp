@@ -59,18 +59,16 @@ class MyServer(BaseHTTPRequestHandler):
                 <title>SmartTimer</title>
             </head>
             <body style="width:960px; margin: 20px auto;">
-                <h1>Welcome to the CLGX SmartTimer</h1>
-                <p>From Micah Holland, Samantha Evans, and Sam Osbourne</p>
-                <br>
-		<h2>SmartTimer Status:</h2>
-		    <ul>
+                <h1  style="font-family:Helvetica;">Welcome to the CLGX SmartTimer</h1>
+            		<h2  style="font-family:Helvetica;">SmartTimer Status:</h2>
+		    <ul style="font-family:Helvetica;">
 			    <li>Address: {host}</li>
 			    <li>Connection: Online</li>
 			    <li>Current Timer: Idle</li>
 			    <li>CPU Temp: C</li>
 		    </ul>
                 <br>
-            <form action="" method="post">
+            <form action="" method="post" style="font-family:Helvetica;">
 				<h3>Timer Controls:</h3>
                     <b>Enter your message:</b>
                     <br>
