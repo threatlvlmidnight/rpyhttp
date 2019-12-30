@@ -23,7 +23,7 @@ cpu = CPUTemperature()
 cpuTemp = cpu.temperature
 
 # SenseHat setup, REMOVE in final build
-
+    # Moved to displayset module
 
 
 # F U N C T I O N S
@@ -101,6 +101,8 @@ class MyServer(BaseHTTPRequestHandler):
         # Display the current cpu temp
         #self.wfile.write(html.format(cpu=cpuTemp).encode("utf-8"))
     
+    
+    # Gets and parses text and button input from webpage. Needs to be migrated to its own function/module at somepoint
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_length).decode("utf-8")
