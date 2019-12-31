@@ -1,4 +1,5 @@
 from sense_hat import SenseHat # hardware library
+import utils #local module
 
 sense = SenseHat()
 sense.set_rotation(270)
@@ -22,8 +23,9 @@ def returnRGB(color):
     
     
     
-def setRotation(deg):
-    sense.set_rotation(int(deg))
+def setRotation(rotation):
+    rotation = utils.postParser(rotation)
+    sense.set_rotation(int(rotation))
     
     
     
@@ -37,8 +39,8 @@ def showColor(color, power):
 
 # Shows a message on the SenseHat matrix
 def showMessage(message, color, power):
-    if power == "On":
-        sense.show_message(message, 0.075, returnRGB(color))
+    if utils.postParser(power) == "On":
+        sense.show_message(utils.postParser(message), 0.075, returnRGB(utils.postParser(color)))
         #print(returnRGB(color))
-    elif power == "Off":
+    elif utils.postParser(power) == "Off":
         sense.clear()
