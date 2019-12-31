@@ -38,15 +38,14 @@ def timer(uin):
             print("Invalid input")
             
         while when_to_stop >= 0:
-            print(when_to_stop)
+            #print(when_to_stop)
             m, s = divmod(when_to_stop, 60)
             h, m = divmod(m, 60)
             time_left = str(h).zfill(2) + ":" + str(m).zfill(2) + ":" + str(s).zfill(2)
             #return time_left
-            print(time_left)#, end="")
+            print(time_left + '\r', end="")
             time.sleep(1)
             when_to_stop -= 1
-            if when_to_stop == 0:
-                break
+            
         
         
