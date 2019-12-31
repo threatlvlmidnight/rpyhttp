@@ -1,11 +1,7 @@
 ##### General Utility Functions for rpyhttp ###
-def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_body = self.rfile.read(content_length).decode("utf-8")
-        print(post_body)
+import displayset # local module
         
-        
-def postParser(attribute):
+def postParser(post_body):
     post_body = post_body.split("&")
     post_c = post_body[1]
     post_p = post_body[3]
@@ -20,21 +16,11 @@ def postParser(attribute):
     message = post_m[1]
     rotation = int(post_r[1])
     message2 = message.split("+")
-    message = ' '.join(message2)
+    message = (' '.join(message2))#.encode("utf-8")
     
-    if attribute == color:
-        return color
-    elif attribute == power:
-        return power
-    elif attribute == message:
-        return message
-    elif attribute == rotation:
-        return rotation
+    color = displayset.returnRGB(color)
     
-    #return color, message, power, rotation
+    return color, message, power, rotation
     
-    
-    #displayset.setRotation(rotation)
-    #displayset.showMessage(message, color, power)
         
         
