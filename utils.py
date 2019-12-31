@@ -1,5 +1,6 @@
 ##### General Utility Functions for rpyhttp ###
 import displayset # local module
+import time
         
 def postParser(post_body):
     post_body = post_body.split("&")
@@ -22,5 +23,30 @@ def postParser(post_body):
     
     return color, message, power, rotation
     
+    
+
+def timer(uin):
+    while True:
+        #uin = abs(int(uin))#uin = input(">> ")
+        try:
+            when_to_stop = int(uin)
+        except KeyboardInterrupt:
+            break
+        #except when_to_stop == 0:
+            #break
+        except:
+            print("Invalid input")
+            
+        while when_to_stop >= 0:
+            print(when_to_stop)
+            m, s = divmod(when_to_stop, 60)
+            h, m = divmod(m, 60)
+            time_left = str(h).zfill(2) + ":" + str(m).zfill(2) + ":" + str(s).zfill(2)
+            #return time_left
+            print(time_left)#, end="")
+            time.sleep(1)
+            when_to_stop -= 1
+            if when_to_stop == 0:
+                break
         
         
