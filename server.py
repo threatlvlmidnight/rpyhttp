@@ -128,6 +128,7 @@ class MyServer(BaseHTTPRequestHandler):
         print(power)
         print(message)
         print(rotation)
+        print(displayset.returnRGB(color))
         
         self._redirect('/')
         

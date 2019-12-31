@@ -17,8 +17,8 @@ def returnRGB(color):
         return (255, 255, 255)
     elif colorx == "lavender":
         return (215, 215, 235)
-    else:
-        return (255, 255, 255)
+    #else:
+        #return (255, 255, 255)
     
     
     
@@ -38,6 +38,7 @@ def showColor(color, power):
 # Shows a message on the SenseHat matrix
 def showMessage(message, color, power):
     if power == "On":
-        sense.show_message(message), 0.075, returnRGB(color)
+        sense.show_message(message, 0.075, returnRGB(color))
+        #print(returnRGB(color))
     elif power == "Off":
         sense.clear()
