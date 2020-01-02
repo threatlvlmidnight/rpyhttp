@@ -1,6 +1,9 @@
 ##### General Utility Functions for rpyhttp ###
 import displayset # local module
 import time
+from sense_hat import SenseHat
+
+sense = SenseHat()
         
 def postParser(post_body):
     post_body = post_body.split("&")
@@ -45,6 +48,7 @@ def timer():
             time_left = str(h).zfill(2) + ":" + str(m).zfill(2) + ":" + str(s).zfill(2)
             #return time_left
             print(time_left + '\r', end="")
+            #sense.show_message((time_left + '\r'))
             time.sleep(1)
             when_to_stop -= 1
             
