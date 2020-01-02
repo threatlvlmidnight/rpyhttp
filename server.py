@@ -54,42 +54,13 @@ class MyServer(BaseHTTPRequestHandler):
         
     # GET function, includes the main HTML of the web page    
     def do_GET(self):
-        html = '''
-        <html>
-            <head>
-                <title>SmartTimer</title>
-            </head>
-            <body style="width:960px; margin: 20px auto;">
-                <h1  style="font-family:Helvetica;">Welcome to the CLGX SmartTimer</h1>
-            		<h2  style="font-family:Helvetica;">SmartTimer Status:</h2>
-		    <ul style="font-family:Helvetica;">
-			    <li>Address: {host}</li>
-			    <li>Connection: Online</li>
-			    <li>Current Timer: Idle</li>
-			    <li>CPU Temp: C</li>
-		    </ul>
-                <br>
-            <form action="" method="post" style="font-family:Helvetica;">
-				<h3>Timer Controls:</h3>
-                    <b>Enter your message:</b>
-                    <br>
-                    <input type="text" name="message"><br>
-                    <br>
-                    <b>Color:</b>
-                    <br>
-                    <input type="text" name="color"><br>
-                    <br>
-                    <b>Rotation:</b>
-                    <br>
-                    <input type="text" name="rotation"><br>
-                    <br>
-                    Turn the light on or off: <br>
-                    <input type="submit" name="onButton" value="On" />
-                    <input type="submit" name="offButton" value="Off" />
-            </form>
-            </body>
-        </html>
-        '''
+	
+		# Hopefully moved to home.html, this has not been tested
+		
+        html = home.html
+		
+		
+		
         self.do_HEAD()
         # Display the IP address in the HTML
         self.wfile.write(html.format(host=host_name).encode("utf-8"))
