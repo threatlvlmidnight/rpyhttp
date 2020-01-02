@@ -6,6 +6,7 @@ import os
 import time
 import subprocess # to get ip address from device
 import displayset #local module
+import utils #local module
 
 
 # Gets the IP address of the PI
@@ -105,30 +106,8 @@ class MyServer(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_length).decode("utf-8")
         print(post_body)
-        post_body = post_body.split("&")
-        post_c = post_body[1]
-        post_p = post_body[3]
-        post_m = post_body[0]
-        post_r = post_body[2]
-        post_c = post_c.split("=")
-        post_p = post_p.split("=")
-        post_m = post_m.split("=")
-        post_r = post_r.split("=")
-        color = post_c[1]
-        power = post_p[1]
-        message = post_m[1]
-        rotation = post_r[1]
-    
-        message2 = message.split("+")
-        message = ' '.join(message2)
-        displayset.setRotation(rotation)
-        displayset.showMessage(message, color, power)
         
-        print(color)
-        print(power)
-        print(message)
-        print(rotation)
-        print(displayset.returnRGB(color))
+        displayset.showMessage(post_body)
         
         self._redirect('/')
         

@@ -1,7 +1,10 @@
 from sense_hat import SenseHat # hardware library
+import utils #local module
 
 sense = SenseHat()
-sense.set_rotation(270)
+#sense.set_rotation(270)
+
+#post_body = "message=poop'.&color=red&rotation=180&onButton=On"
 
 # Convert text color inputs to rgb value tuples
 
@@ -17,13 +20,14 @@ def returnRGB(color):
         return (255, 255, 255)
     elif colorx == "lavender":
         return (215, 215, 235)
-    #else:
-        #return (255, 255, 255)
+    else:
+        return (255, 255, 255)
     
     
     
-def setRotation(deg):
-    sense.set_rotation(int(deg))
+def setRotation(rotation):
+    rotation = utils.postParser(post_body)
+    sense.set_rotation(rotation)
     
     
     
@@ -36,9 +40,11 @@ def showColor(color, power):
         sense.clear()
 
 # Shows a message on the SenseHat matrix
-def showMessage(message, color, power):
+def showMessage(post_body):
+    color, message, power, rotation = utils.postParser(post_body)
+    sense.set_rotation(rotation)
     if power == "On":
-        sense.show_message(message, 0.075, returnRGB(color))
+        sense.show_message(message, 0.075, color)
         #print(returnRGB(color))
     elif power == "Off":
         sense.clear()
