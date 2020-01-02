@@ -25,9 +25,10 @@ def postParser(post_body):
     
     
 
-def timer(uin):
+def timer():
     while True:
-        #uin = abs(int(uin))#uin = input(">> ")
+        uin = input(">> ")
+        uin = abs(int(uin))
         try:
             when_to_stop = int(uin)
         except KeyboardInterrupt:
