@@ -1,12 +1,18 @@
-from sense_hat import SenseHat # hardware library
+import time
+import sys
 import utils #local module
 
-sense = SenseHat()
-#sense.set_rotation(270)
+from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
-#post_body = "message=poop'.&color=red&rotation=180&onButton=On"
+# Matrix configuration
+options = RGBMatrixOptions()
+options.rows = 32
+options.chain_length = 1
+options.parallel = 1
+options.hardware_mapping = 'adafruit-hat'
 
-# Convert text color inputs to rgb value tuples
+matrix = RGBMatrix(options = options)
+
 
 def returnRGB(color):
     colorx = color.casefold()
@@ -23,28 +29,27 @@ def returnRGB(color):
     else:
         return (255, 255, 255)
     
+#def showText(text):
+    #offscreen_canvas = matrix.CreateFrameCanvas()
+    #font = graphics.Font()
+    #font.LoadFont("../../../fonts/7x13.bdf")
+    #textColor = graphics.color(255, 255, 255)
+    #text = "Hello world"
     
+    #while True:
+        #offscreen_canvas.Clear()
+            
     
-def setRotation(rotation):
-    rotation = utils.postParser(post_body)
-    sense.set_rotation(rotation)
+#def setRotation(rotation):
+    
     
     
     
     
 # Sets the SenseHat matrix to a solid color
-def showColor(color, power):
-    if power == "On":
-        sense.clear(displayset.returnRGB(color))
-    elif power == "Off":
-        sense.clear()
+#def showColor(color, power):
+    
 
 # Shows a message on the SenseHat matrix
-def showMessage(post_body):
-    color, message, power, rotation = utils.postParser(post_body)
-    sense.set_rotation(rotation)
-    if power == "On":
-        sense.show_message(message, 0.075, color)
-        #print(returnRGB(color))
-    elif power == "Off":
-        sense.clear()
+#def showMessage(post_body):
+    

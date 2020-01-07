@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from sense_hat import SenseHat # hardware library
+#from sense_hat import SenseHat # hardware library
 from gpiozero import CPUTemperature
 import socketserver
 import os
