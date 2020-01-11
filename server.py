@@ -1,5 +1,4 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-#from sense_hat import SenseHat # hardware library
 from gpiozero import CPUTemperature
 import socketserver
 import os
@@ -7,6 +6,10 @@ import time
 import subprocess # to get ip address from device
 import displayset #local module
 import utils #local module
+import Timer #local module
+from rgbmatrix import graphics
+from MatrixBase import MatrixBase
+from samplebase import SampleBase
 
 
 # Gets the IP address of the PI
@@ -61,44 +64,30 @@ class MyServer(BaseHTTPRequestHandler):
             </head>
             <body style="width:960px; margin: 20px auto;">
                 <h1  style="font-family:Helvetica;">Welcome to the CLGX SmartTimer</h1>
-            		<h2  style="font-family:Helvetica;">SmartTimer Status:</h2>
-		    <ul style="font-family:Helvetica;">
-			    <li>Address: {host}</li>
-			    <li>Connection: Online</li>
-			    <li>Current Timer: Idle</li>
-			    <li>CPU Temp: C</li>
-		    </ul>
+            		
                 <br>
             <form action="" method="post" style="font-family:Helvetica;">
-				<h3>Timer Controls:</h3>
-                    <b>Enter your message:</b>
+				<h3>Start Timer</h3>
+                    
+		    Start 15 minute timer:
+		    <br>
+		    <br>
+                    <input type="submit" name="onButton" value="Start" />
+                    <input type="submit" name="offButton" value="Stop" />
+		    <br>
+		    <br>
+		    <br>
+		    <b>Enter a custom duration:</b>
+		    <br>
+                    <input type="text" name="duration"><br>
                     <br>
-                    <input type="text" name="message"><br>
-                    <br>
-                    <b>Color:</b>
-                    <br>
-                    <input type="text" name="color"><br>
-                    <br>
-                    <b>Rotation:</b>
-                    <br>
-                    <input type="text" name="rotation"><br>
-                    <br>
-                    Turn the light on or off: <br>
-                    <input type="submit" name="onButton" value="On" />
-                    <input type="submit" name="offButton" value="Off" />
             </form>
             </body>
-        </html>
-        '''
+        </html> '''
         self.do_HEAD()
         # Display the IP address in the HTML
         self.wfile.write(html.format(host=host_name).encode("utf-8"))
-        # Display the device connection status
-        
-        # Display the status of the current timer
-        
-        # Display the current cpu temp
-        #self.wfile.write(html.format(cpu=cpuTemp).encode("utf-8"))
+       
     
     
     # Gets and parses text and button input from webpage. Needs to be migrated to its own function/module at somepoint
@@ -106,11 +95,71 @@ class MyServer(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_length).decode("utf-8")
         print(post_body)
+        displayPower = utils.postParser(post_body)
+        displayText = RunText()
         
-        displayset.showMessage(post_body)
+        
+            #displayText.run()
+            
+        if displayPower == "Start":
+            run_text = RunText()
+        if (not run_text.process()):
+            run_text.print_help()
+        
+        #displayset.showMessage(post_body)
+        
         
         self._redirect('/')
+
+class RunText(MatrixBase):
+    name = "test"
+    
+    #offscreen_canvas = self.matrix.CreateFrameCanvas()
+    
+    #def __init__(self, *args, **kwargs):
+        #super(RunText, self).__init__(*args, **kwargs)
+        #self.parser.add_argument("-t", "--text", help="The text to display on the RGB Matrix", default="A0:00")
         
+    #@classmethod    
+    def run(self):
+        offscreen_canvas = self.matrix.CreateFrameCanvas()
+        #offscreen_canvas = CreateFrameCanvas()
+        font = graphics.Font()
+        font.LoadFont("fonts/9x15B.bdf")
+        textColor = graphics.Color(0, 255, 0) # <--- Turn into input
+        pos = 0 
+        #my_text = self.args.text
+        when_to_stop = 15 * 60 #abs(int(input(" "))) * 60
+        # Update to adjust time calibration
+        delay = 0
+        
+            
+        while True:
+            
+            while when_to_stop >= 0:
+
+                m, s = divmod(when_to_stop, 60)
+                h, m = divmod(m, 60)
+                time_left = str(m).zfill(2) + ":" + str(s).zfill(2)       
+                time.sleep(1)
+                when_to_stop -= 1
+                mins = str(m).zfill(2)
+                secs = str(s).zfill(2)
+                offscreen_canvas.Clear()
+                thisClass = utils.RunText()
+                print(mins + secs)
+                graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, mins)
+                graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
+                
+                
+                time.sleep(delay)
+                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+                
+                if when_to_stop == 0:
+                    when_to_stop -= 1
+                
+            graphics.DrawText(self.offscreen_canvas, font, 8, 13, textColor, 00)
+            graphics.DrawText(self.offscreen_canvas, font, 8, 29, textColor, 00)
     
     
     

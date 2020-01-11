@@ -5,23 +5,33 @@ import utils
 from MatrixBase import MatrixBase
 from samplebase import SampleBase
 
+# How to run the timer from CLI
+# 1. Open a terminal window
+# 2. cd Documents\rpyhttp
+# 3. sudo python Timer.py --led-slowdown-gpio=3 --led-pixel-mapper=Rotate:270
+
 
 class RunText(MatrixBase):
+    name = "test"
+    #offscreen_canvas = self.matrix.CreateFrameCanvas()
+    
     def __init__(self, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
         self.parser.add_argument("-t", "--text", help="The text to display on the RGB Matrix", default="A0:00")
         
-        
+    #@classmethod    
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
+        #offscreen_canvas = CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont("fonts/9x15B.bdf")
-        textColor = graphics.Color(0, 0, 255) # <--- Turn into input
+        textColor = graphics.Color(0, 255, 0) # <--- Turn into input
         pos = 0 
-        my_text = self.args.text
+        #my_text = self.args.text
         when_to_stop = abs(int(input(" "))) * 60
         # Update to adjust time calibration
         delay = 0
+        
             
         while True:
             
@@ -51,34 +61,34 @@ class RunText(MatrixBase):
             graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, 00)
                 
         
-            max_brightness = self.matrix.brightness
-            count = 0
-            c = 255
+            #max_brightness = self.matrix.brightness
+            #count = 0
+            #c = 255
 
-            while True:
-                if self.matrix.brightness < 1:
-                    self.matrix.brightness = max_brightness
-                    count += 1
-                else:
-                    self.matrix.brightness -= 1
+            #while True:
+                #if self.matrix.brightness < 1:
+                    #self.matrix.brightness = max_brightness
+                    #count += 1
+                #else:
+                    #self.matrix.brightness -= 1
 
-                if count % 4 == 0:
-                    self.matrix.Fill(c, 0, 0)
-                elif count % 4 == 1:
-                    self.matrix.Fill(0, c, 0)
-                elif count % 4 == 2:
-                    self.matrix.Fill(0, 0, c)
-                elif count % 4 == 3:
-                    self.matrix.Fill(c, c, c)
+                #if count % 4 == 0:
+                    #self.matrix.Fill(c, 0, 0)
+                #elif count % 4 == 1:
+                    #self.matrix.Fill(0, c, 0)
+                #elif count % 4 == 2:
+                    #self.matrix.Fill(0, 0, c)
+                #elif count % 4 == 3:
+                    #self.matrix.Fill(c, c, c)
 
-                self.usleep(20 * 1000)
+                #self.usleep(20 * 1000)
     
             
 
 
 
 # Main function
-#print(__name__)
+print(__name__)
 
 if __name__ == "__main__":
     run_text = RunText()
