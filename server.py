@@ -35,7 +35,7 @@ cpuTemp = cpu.temperature
 # Assings RGB values to text color inputs
     # Moved to displayset module
 
-
+#Need check button function to run in display loop.
 
 
 
@@ -95,24 +95,49 @@ class MyServer(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_length).decode("utf-8")
         print(post_body)
-        displayPower = utils.postParser(post_body)
-        displayText = RunText()
         
+        self._redirect('/')
         
-            #displayText.run()
-            
+    def post_Handler(self):
+        displayPower = utils.postParser(self.post_body())
+        
         if displayPower == "Start":
             run_text = RunText()
+        elif displayPower == "Stop":
+            run_text.when_to_stop = 0
+        else:
+            pass
+        
+                
         if (not run_text.process()):
             run_text.print_help()
+    
+        
         
         #displayset.showMessage(post_body)
         
         
-        self._redirect('/')
+        
 
 class RunText(MatrixBase):
-    name = "test"
+    when_to_stop = 0
+    
+    # SHOULD BE PASSED THE PARSED USER INPUT FROM POST METHOD
+    # IF post_body == 'Start'
+    #   START TIMER
+    # ELIF post_body == 'Stop'
+    #   STOP TIMER
+    #   CLEAR DISPLAY
+    # ELIF post_body == 'Pause'
+    #   PAUSE TIMER
+    
+    
+    ### WIP ###
+    #displayPower = utils.postParser(post_body)
+    #displayText = RunText()
+        
+    
+    
     
     #offscreen_canvas = self.matrix.CreateFrameCanvas()
     
@@ -132,6 +157,7 @@ class RunText(MatrixBase):
         when_to_stop = 15 * 60 #abs(int(input(" "))) * 60
         # Update to adjust time calibration
         delay = 0
+        pause = False
         
             
         while True:
@@ -150,7 +176,17 @@ class RunText(MatrixBase):
                 print(mins + secs)
                 graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, mins)
                 graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
+                displayPower = utils.postParser(post_body)
                 
+                #Not Finished Pause Section
+                if displayPower == "Stop":
+                    pause = True
+                
+                while pause == True:
+                    graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, "PAUSE")
+                    #graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
+                    if displayPower == "Start":
+                        pause = False
                 
                 time.sleep(delay)
                 offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
@@ -160,13 +196,14 @@ class RunText(MatrixBase):
                 
             graphics.DrawText(self.offscreen_canvas, font, 8, 13, textColor, 00)
             graphics.DrawText(self.offscreen_canvas, font, 8, 29, textColor, 00)
-    
+            
+            
     
     
 if __name__ == '__main__':
     http_server = HTTPServer((host_name, host_port), MyServer)
     print("Server Starts = %s:%s" % (host_name, host_port))
-    
+    # DISPLAY host_name ON TIMER
     try:
         http_server.serve_forever()
     except KeyboardInterrupt:
