@@ -26,21 +26,13 @@ host_port = 8000
 cpu = CPUTemperature()
 cpuTemp = cpu.temperature
 
-# SenseHat setup, REMOVE in final build
-    # Moved to displayset module
-
-
-# F U N C T I O N S
-
-# Assings RGB values to text color inputs
-    # Moved to displayset module
-
 #Need check button function to run in display loop.
 
 
 
 # Initializes a simple HTTP server using the custom BaseHTTPRequestHandler
 class MyServer(BaseHTTPRequestHandler):
+    post_body = " "
     
     # HEAD function
     def do_HEAD(self):
@@ -85,24 +77,28 @@ class MyServer(BaseHTTPRequestHandler):
             </body>
         </html> '''
         self.do_HEAD()
+        
         # Display the IP address in the HTML
         self.wfile.write(html.format(host=host_name).encode("utf-8"))
        
     
     
-    # Gets and parses text and button input from webpage. Needs to be migrated to its own function/module at somepoint
+    # Gets and parses text and button input from webpage.
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
-        post_body = self.rfile.read(content_length).decode("utf-8")
-        print(post_body)
-        
+        self.post_body = self.rfile.read(content_length).decode("utf-8")
+        print(self.post_body)
+        self.post_Handler()
         self._redirect('/')
-        
+    
+    # Checks the input of do_POST and controls the flow of the loop
     def post_Handler(self):
-        displayPower = utils.postParser(self.post_body())
+        displayPower = utils.postParser(self.post_body)
+        print(displayPower)
         
         if displayPower == "Start":
             run_text = RunText()
+            print('RunText object initialized')
         elif displayPower == "Stop":
             run_text.when_to_stop = 0
         else:
@@ -114,39 +110,14 @@ class MyServer(BaseHTTPRequestHandler):
     
         
         
-        #displayset.showMessage(post_body)
-        
-        
-        
-
+# Handles display rendering
 class RunText(MatrixBase):
-    when_to_stop = 0
-    
-    # SHOULD BE PASSED THE PARSED USER INPUT FROM POST METHOD
-    # IF post_body == 'Start'
-    #   START TIMER
-    # ELIF post_body == 'Stop'
-    #   STOP TIMER
-    #   CLEAR DISPLAY
-    # ELIF post_body == 'Pause'
-    #   PAUSE TIMER
+    #when_to_stop = 0
     
     
-    ### WIP ###
-    #displayPower = utils.postParser(post_body)
-    #displayText = RunText()
         
-    
-    
-    
-    #offscreen_canvas = self.matrix.CreateFrameCanvas()
-    
-    #def __init__(self, *args, **kwargs):
-        #super(RunText, self).__init__(*args, **kwargs)
-        #self.parser.add_argument("-t", "--text", help="The text to display on the RGB Matrix", default="A0:00")
-        
-    #@classmethod    
     def run(self):
+        when_to_stop = 0
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         #offscreen_canvas = CreateFrameCanvas()
         font = graphics.Font()
@@ -176,17 +147,17 @@ class RunText(MatrixBase):
                 print(mins + secs)
                 graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, mins)
                 graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
-                displayPower = utils.postParser(post_body)
+                #displayPower = utils.postParser(post_body)
                 
                 #Not Finished Pause Section
-                if displayPower == "Stop":
-                    pause = True
+                #if displayPower == "Stop":
+                    #pause = True
                 
-                while pause == True:
-                    graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, "PAUSE")
+                #while pause == True:
+                    #graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, "PAUSE")
                     #graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
-                    if displayPower == "Start":
-                        pause = False
+                    #if displayPower == "Start":
+                        #pause = False
                 
                 time.sleep(delay)
                 offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
@@ -207,6 +178,7 @@ if __name__ == '__main__':
     try:
         http_server.serve_forever()
     except KeyboardInterrupt:
+        offscreen_canvas.Clear()
         http_server.server_close()
 
 
@@ -215,6 +187,11 @@ if __name__ == '__main__':
 
     
 
+######## NOTES ######## 
 
 
-
+    #offscreen_canvas = self.matrix.CreateFrameCanvas()
+    
+    #def __init__(self, *args, **kwargs):
+        #super(RunText, self).__init__(*args, **kwargs)
+        #self.parser.add_argument("-t", "--text", help="The text to display on the RGB Matrix", default="A0:00")
