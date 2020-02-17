@@ -12,6 +12,11 @@ from rgbmatrix import graphics
 from MatrixBase import MatrixBase
 from samplebase import SampleBase
 
+# TO START THE SERVER:
+# OPEN A TERMINAL
+# RUN: cd Documents/rpyhttp
+# RUN: sudo python server.py --led-slowdown-gpio=2
+
 
 # Gets the IP address of the PI
 IP = subprocess.check_output(["hostname", "-I"]).split()[0]
@@ -144,7 +149,7 @@ class RunText(MatrixBase):
             globalTimeLeft.font = graphics.Font()
             globalTimeLeft.font.LoadFont("fonts/9x15B.bdf")
             globalTimeLeft.font2 = graphics.Font()
-            globalTimeLeft.font2.LoadFont("fonts/6x10.bdf")
+            globalTimeLeft.font2.LoadFont("fonts/5x8.bdf")
             globalTimeLeft.fontsInit = True
         # Update to adjust time calibration
 #         delay = 0
@@ -177,8 +182,12 @@ class RunText(MatrixBase):
 #             fourth = host_name[thirdIndex:fourthIndex]
 #             print(fourth)
 #             graphics.DrawText(offscreen_canvas, font2, 0, 7, self.textColor, str(host_name[:8]))
-            graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 9, self.textColor, str(host_name[8:]))
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 9, self.textColor, str(host_name[:7]))
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 19, self.textColor, str(host_name[6:]))
             graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 29, self.textColor, ":"+str(host_port))
+            print(str(host_name[:7]))
+            print(str(host_name[4:]))
+            print(":"+str(host_port))
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
             time.sleep(1)
    
