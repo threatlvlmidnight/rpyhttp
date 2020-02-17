@@ -93,18 +93,21 @@ class MyServer(BaseHTTPRequestHandler):
         print(displayPower)
         
         if displayPower == "Start":
-            Test.val = 5
-            print('Start')
+            if globalTimeLeft.pause != True:
+                globalTimeLeft.val = 15 * 60
+                print('Start')
+            else:
+                globalTimeLeft.pause = False
             self._redirect('/')
         elif displayPower == "Stop":
-            Test.val = 0
+            globalTimeLeft.val = 0
             print('Stop')
             self._redirect('/')  
         elif displayPower == "Pause":
-            if Test.pause:
-                Test.pause = False
+            if globalTimeLeft.pause:
+                globalTimeLeft.pause = False
             else:
-                Test.pause = True
+                globalTimeLeft.pause = True
             print('Pause')
             self._redirect('/')  
         
@@ -137,26 +140,28 @@ class RunText(MatrixBase):
         print("Running")
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         #offscreen_canvas = CreateFrameCanvas()
-        font = graphics.Font()
-        font.LoadFont("fonts/9x15B.bdf")
-        font2 = graphics.Font()
-        font2.LoadFont("fonts/6x10.bdf")
+        if globalTimeLeft.fontsInit == False:
+            globalTimeLeft.font = graphics.Font()
+            globalTimeLeft.font.LoadFont("fonts/9x15B.bdf")
+            globalTimeLeft.font2 = graphics.Font()
+            globalTimeLeft.font2.LoadFont("fonts/6x10.bdf")
+            globalTimeLeft.fontsInit = True
         # Update to adjust time calibration
-        delay = 0
+#         delay = 0
         pause = False
         
         offscreen_canvas.Clear()
-        time.sleep(delay)
-        if Test.val > 0:
-            m, s = divmod(Test.getVal(), 60)
+#         time.sleep(delay)
+        if globalTimeLeft.val > 0:
+            m, s = divmod(globalTimeLeft.val, 60)
             h, m = divmod(m, 60)
             self.mins = str(m).zfill(2)
             self.secs = str(s).zfill(2)
-            graphics.DrawText(offscreen_canvas, font, 8, 13, self.textColor, self.mins)
-            graphics.DrawText(offscreen_canvas, font, 8, 29, self.textColor, self.secs)
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font, 8, 13, self.textColor, self.mins)
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font, 8, 29, self.textColor, self.secs)
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-            if Test.pause == False:
-                Test.val -= 1;
+            if globalTimeLeft.pause == False:
+                globalTimeLeft.val -= 1;
             time.sleep(1)
         else:
 #             firstIndex = host_name.index('.')
@@ -172,17 +177,18 @@ class RunText(MatrixBase):
 #             fourth = host_name[thirdIndex:fourthIndex]
 #             print(fourth)
 #             graphics.DrawText(offscreen_canvas, font2, 0, 7, self.textColor, str(host_name[:8]))
-            graphics.DrawText(offscreen_canvas, font2, 0, 9, self.textColor, str(host_name[8:]))
-            graphics.DrawText(offscreen_canvas, font2, 0, 29, self.textColor, str(host_port))
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 9, self.textColor, str(host_name[8:]))
+            graphics.DrawText(offscreen_canvas, globalTimeLeft.font2, 0, 29, self.textColor, ":"+str(host_port))
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
             time.sleep(1)
    
-class Test:
+class globalTimeLeft:
     val = 0
     pause = False
+    fontsInit = False
     
     def getVal():
-        return Test.val
+        return globalTimeLeft.val
 
 
     
