@@ -7,6 +7,7 @@ import subprocess # to get ip address from device
 import displayset #local module
 import utils #local module
 import Timer #local module
+import threading
 from rgbmatrix import graphics
 from MatrixBase import MatrixBase
 from samplebase import SampleBase
@@ -20,11 +21,11 @@ host_name = str(IP.decode('utf-8'))
 
 
 # ENTER a host port, 8000, 8080 work. 
-host_port = 8000
+host_port = 8080
 
-# Get CPU temp from GPIOzero library
-cpu = CPUTemperature()
-cpuTemp = cpu.temperature
+# # Get CPU temp from GPIOzero library
+# cpu = CPUTemperature()
+# cpuTemp = cpu.temperature
 
 #Need check button function to run in display loop.
 
@@ -66,18 +67,13 @@ class MyServer(BaseHTTPRequestHandler):
 		    <br>
                     <input type="submit" name="onButton" value="Start" />
                     <input type="submit" name="offButton" value="Stop" />
+                    <input type="submit" name="pauseButton" value="Pause" />
 		    <br>
-		    <br>
-		    <br>
-		    <b>Enter a custom duration:</b>
-		    <br>
-                    <input type="text" name="duration"><br>
                     <br>
             </form>
             </body>
         </html> '''
         self.do_HEAD()
-        
         # Display the IP address in the HTML
         self.wfile.write(html.format(host=host_name).encode("utf-8"))
        
@@ -97,91 +93,120 @@ class MyServer(BaseHTTPRequestHandler):
         print(displayPower)
         
         if displayPower == "Start":
-            run_text = RunText()
-            print('RunText object initialized')
+            Test.val = 5
+            print('Start')
+            self._redirect('/')
         elif displayPower == "Stop":
-            run_text.when_to_stop = 0
-        else:
-            pass
+            Test.val = 0
+            print('Stop')
+            self._redirect('/')  
+        elif displayPower == "Pause":
+            if Test.pause:
+                Test.pause = False
+            else:
+                Test.pause = True
+            print('Pause')
+            self._redirect('/')  
         
-                
-        if (not run_text.process()):
-            run_text.print_help()
+# creates the http server thread    
+class myThread (threading.Thread):
+    http_server = None
     
-        
-        
+    def __init__(self, http_server):
+      threading.Thread.__init__(self)
+      self.http_server = http_server
+      
+    def run(self):
+#         state = self.http_server.when_to_stop
+        print("Server Starts = %s:%s" % (host_name, host_port))
+        try:
+            self.http_server.serve_forever()
+        except KeyboardInterrupt:
+            offscreen_canvas.Clear()
+            self.http_server.server_close()
+
 # Handles display rendering
 class RunText(MatrixBase):
-    #when_to_stop = 0
     
-    
+#     server = 
+    textColor = graphics.Color(0, 255, 0) # <--- Turn into input
+    mins = 0
+    secs = 0
         
     def run(self):
-        when_to_stop = 0
+        print("Running")
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         #offscreen_canvas = CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont("fonts/9x15B.bdf")
-        textColor = graphics.Color(0, 255, 0) # <--- Turn into input
-        pos = 0 
-        #my_text = self.args.text
-        when_to_stop = 15 * 60 #abs(int(input(" "))) * 60
+        font2 = graphics.Font()
+        font2.LoadFont("fonts/6x10.bdf")
         # Update to adjust time calibration
         delay = 0
         pause = False
         
-            
-        while True:
-            
-            while when_to_stop >= 0:
-
-                m, s = divmod(when_to_stop, 60)
-                h, m = divmod(m, 60)
-                time_left = str(m).zfill(2) + ":" + str(s).zfill(2)       
-                time.sleep(1)
-                when_to_stop -= 1
-                mins = str(m).zfill(2)
-                secs = str(s).zfill(2)
-                offscreen_canvas.Clear()
-                thisClass = utils.RunText()
-                print(mins + secs)
-                graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, mins)
-                graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
-                #displayPower = utils.postParser(post_body)
-                
-                #Not Finished Pause Section
-                #if displayPower == "Stop":
-                    #pause = True
-                
-                #while pause == True:
-                    #graphics.DrawText(offscreen_canvas, font, 8, 13, textColor, "PAUSE")
-                    #graphics.DrawText(offscreen_canvas, font, 8, 29, textColor, secs)
-                    #if displayPower == "Start":
-                        #pause = False
-                
-                time.sleep(delay)
-                offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
-                
-                if when_to_stop == 0:
-                    when_to_stop -= 1
-                
-            graphics.DrawText(self.offscreen_canvas, font, 8, 13, textColor, 00)
-            graphics.DrawText(self.offscreen_canvas, font, 8, 29, textColor, 00)
-            
-            
+        offscreen_canvas.Clear()
+        time.sleep(delay)
+        if Test.val > 0:
+            m, s = divmod(Test.getVal(), 60)
+            h, m = divmod(m, 60)
+            self.mins = str(m).zfill(2)
+            self.secs = str(s).zfill(2)
+            graphics.DrawText(offscreen_canvas, font, 8, 13, self.textColor, self.mins)
+            graphics.DrawText(offscreen_canvas, font, 8, 29, self.textColor, self.secs)
+            offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+            if Test.pause == False:
+                Test.val -= 1;
+            time.sleep(1)
+        else:
+#             firstIndex = host_name.index('.')
+#             first = host_name[:firstIndex]
+#             print(first)
+#             secondIndex = host_name[firstIndex+1:].index('.')
+#             second = host_name[firstIndex:secondIndex]
+#             print(second)
+#             thirdIndex = host_name[secondIndex+2:].index('.')
+#             third = host_name[secondIndex:thirdIndex]
+#             print(third)
+#             fourthIndex = host_name[thirdIndex+3:].index('.')
+#             fourth = host_name[thirdIndex:fourthIndex]
+#             print(fourth)
+#             graphics.DrawText(offscreen_canvas, font2, 0, 7, self.textColor, str(host_name[:8]))
+            graphics.DrawText(offscreen_canvas, font2, 0, 9, self.textColor, str(host_name[8:]))
+            graphics.DrawText(offscreen_canvas, font2, 0, 29, self.textColor, str(host_port))
+            offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+            time.sleep(1)
+   
+class Test:
+    val = 0
+    pause = False
     
+    def getVal():
+        return Test.val
+
+
     
 if __name__ == '__main__':
+    #displayIP = displayIP()
+    print('Main object init')
+    #display_IP.displayHost(host_name)
+
     http_server = HTTPServer((host_name, host_port), MyServer)
-    print("Server Starts = %s:%s" % (host_name, host_port))
+#     run_text = RunText()
+    thread = myThread(http_server)
+    thread.start()
     # DISPLAY host_name ON TIMER
+    
     try:
-        http_server.serve_forever()
+        while True:
+            run_text = RunText()
+            if (not run_text.process()):
+                run_text.print_help()
     except KeyboardInterrupt:
         offscreen_canvas.Clear()
-        http_server.server_close()
-
-
+        self.http_server.server_close()
+        
+    
         
     
 
